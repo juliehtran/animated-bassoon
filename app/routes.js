@@ -9,54 +9,11 @@ function setupRoutes(app, passport, db) {
     res.render('index.ejs');
   });
 
-  // PROFILE SECTION =========================
-  app.get('/profile', isLoggedIn, function (req, res) {
-    db.collection('messages').find().toArray((err, result) => {
-      if (err) return console.log(err)
-      res.render('profile.ejs', {
-        user: req.user,
-        messages: result
-      })
-    })
-  });
-
   // LOGOUT ==============================
   app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
   });
-
-  // message board routes ===============================================================
-
-  app.post('/messages', (req, res) => {
-    db.collection('messages').save({ name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown: 0 }, (err, result) => {
-      if (err) return console.log(err)
-      console.log('saved to database')
-      res.redirect('/profile')
-    })
-  })
-
-  app.put('/messages', (req, res) => {
-    db.collection('messages')
-      .findOneAndUpdate({ name: req.body.name, msg: req.body.msg }, {
-        $set: {
-          thumbUp: req.body.thumbUp + 1
-        }
-      }, {
-        sort: { _id: -1 },
-        upsert: true
-      }, (err, result) => {
-        if (err) return res.send(err)
-        res.send(result)
-      })
-  })
-
-  app.delete('/messages', (req, res) => {
-    db.collection('messages').findOneAndDelete({ name: req.body.name, msg: req.body.msg }, (err, result) => {
-      if (err) return res.send(500, err)
-      res.send('Message deleted!')
-    })
-  })
 
   // =============================================================================
   // AUTHENTICATE (FIRST LOGIN) ==================================================
@@ -88,23 +45,6 @@ function setupRoutes(app, passport, db) {
     failureRedirect: '/signup', // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
   }));
-
-  // =============================================================================
-  // UNLINK ACCOUNTS =============================================================
-  // =============================================================================
-  // used to unlink accounts. for social accounts, just remove the token
-  // for local account, remove email and password
-  // user account will stay active in case they want to reconnect in the future
-
-  // local -----------------------------------
-  app.get('/unlink/local', isLoggedIn, function (req, res) {
-    var user = req.user;
-    user.local.email = undefined;
-    user.local.password = undefined;
-    user.save(function (err) {
-      res.redirect('/profile');
-    });
-  });
 
 };
 
