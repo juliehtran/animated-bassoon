@@ -5,8 +5,8 @@ function setupRoutes(app, passport, db) {
   // normal routes ===============================================================
 
   // show the home page (will also have our login links)
-  app.get('/', function (req, res) {
-    res.render('index.ejs');
+  app.get('/', isLoggedIn, function (req, res) {
+    res.render('game.ejs');
   });
 
   // LOGOUT ==============================
@@ -28,7 +28,7 @@ function setupRoutes(app, passport, db) {
 
   // process the login form
   app.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/somethingElse', // redirect to the secure profile section
+    successRedirect: '/', // redirect to the secure profile section
     failureRedirect: '/login', // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
   }));
@@ -41,7 +41,7 @@ function setupRoutes(app, passport, db) {
 
   // process the signup form
   app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/somethingElse', // redirect to the secure profile section
+    successRedirect: '/', // redirect to the secure profile section
     failureRedirect: '/signup', // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
   }));
@@ -53,5 +53,5 @@ function isLoggedIn(req, res, next) {
   if (req.isAuthenticated())
     return next();
 
-  res.redirect('/');
+  res.redirect('/login');
 }
