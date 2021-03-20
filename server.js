@@ -14,13 +14,13 @@ const morgan       = require('morgan');
 const cookieParser = require('cookie-parser');
 const session      = require('express-session');
 
-const configDB = require('./config/database.js');
-const setupRoutes = require('./app/routes.js')
+const configDB = require('./config/database');
+const setupRoutes = require('./app/routes')
 
 let db
 
 // configuration ===============================================================
-mongoose.connect(configDB.url, (err, database) => {
+mongoose.connect(configDB.url, { useNewUrlParser: true, useUnifiedTopology: true }, (err, database) => {
   if (err) return console.log(err)
   db = database
   // require('./app/routes.js')(app, passport, db)
@@ -51,4 +51,4 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 // launch ======================================================================
 app.listen(port);
-console.log('The magic happens on port ' + port);
+console.log('Listening on ' + port);

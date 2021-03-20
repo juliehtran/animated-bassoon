@@ -106,7 +106,7 @@ function checkForWin() {
   })
   // if the game is NOT over, but the boxes are full, then game over
   // write this outside the loop so there's no alerting x9
-  if(!gameBoard.gameOver && boxesAreAllFull()) {
+  if (!gameBoard.gameOver && boxesAreAllFull()) {
     alert(`It's a draw. Play again.`)
     gameBoard.gameOver = true
   }
@@ -133,7 +133,7 @@ function didPlayerOneWin(row) {
 function boxesAreAllFull() {
   result = true
   gameBoard.boxes.forEach((box) => {
-    if(box.innerHTML === " ") {
+    if (box.innerHTML === " ") {
       result = false
     }
   })
