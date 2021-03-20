@@ -1,12 +1,22 @@
+const User = require('./models/user')
+
 module.exports = setupRoutes;
 
-function setupRoutes(app, passport, db) {
+function setupRoutes(app, passport) {
 
   // normal routes ===============================================================
 
   // show the home page (will also have our login links)
   app.get('/', isLoggedIn, function (req, res) {
-    res.render('game.ejs');
+    res.render('game.ejs', { gamesPlayed: req.user.gamesPlayed || 0 });
+  });
+  
+  app.put('/user', isLoggedIn, async function (req, res) {
+    const gamesPlayed = req.user.gamesPlayed || 0
+    const user = await User.findById(req.user._id)
+    user.gamesPlayed = gamesPlayed + 1
+    const result = await user.save()
+    res.json({ user: result })
   });
 
   // LOGOUT ==============================

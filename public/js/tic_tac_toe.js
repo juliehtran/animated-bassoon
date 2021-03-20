@@ -31,7 +31,7 @@ const gameBoard = {
 // name the players as objects with a marker for strings
 const playerOne = {
   marker: `<img src="css/bacon.png">`
-    // marker: "X"
+  // marker: "X"
 
 };
 
@@ -39,6 +39,8 @@ const playerTwo = {
   marker: `<img src="css/eggs.png">`
   // marker: "O"
 };
+
+const playCounter = document.querySelector(`.play-count`)
 
 // change turns
 let whoseTurnIsIt = playerOne
@@ -110,20 +112,27 @@ function checkForWin() {
     alert(`It's a draw. Play again.`)
     gameBoard.gameOver = true
   }
+  if (gameBoard.gameOver) {
+    fetch('/user', { method: 'PUT' })
+      .then((response) => response.json())
+      .then((response) => {
+        playCounter.innerText = response.user.gamesPlayed
+      })
+  }
 }
 
 // ___________validate the wins and if it's a draw________________________________
 
 function didPlayerTwoWin(row) {
   return row[0].innerHTML === playerTwo.marker &&
-  row[1].innerHTML === playerTwo.marker &&
-  row[2].innerHTML === playerTwo.marker
+    row[1].innerHTML === playerTwo.marker &&
+    row[2].innerHTML === playerTwo.marker
 }
 
 function didPlayerOneWin(row) {
   return row[0].innerHTML === playerOne.marker &&
-  row[1].innerHTML === playerOne.marker &&
-  row[2].innerHTML === playerOne.marker
+    row[1].innerHTML === playerOne.marker &&
+    row[2].innerHTML === playerOne.marker
 }
 
 // worked with a mentor
